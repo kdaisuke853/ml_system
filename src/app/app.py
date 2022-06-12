@@ -1,7 +1,13 @@
+import imp
+import os 
+
 from fastapi import FastAPI
+from src.app.routers import routers
 
-app = FastAPI()
+app = FastAPI(
+    title="Test server",
+    description="api server",
+)
 
-@app.get("/")
-async def hello():
-    return {"message" : "Hello,World"}
+app.include_router(routers.router, prefix="", tags=[""])
+
