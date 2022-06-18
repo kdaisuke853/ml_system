@@ -1,5 +1,6 @@
 {
     "model_name": "cl-tohoku/bert-base-japanese-whole-word-masking",
     "max_length": 128,
-    "model_path": "models/model.onnx"
+    "model_path": "models/model.onnx",
+    "tokenizer_path": "models/bert_tokenizer"
 }
