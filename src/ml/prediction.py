@@ -1,12 +1,16 @@
-from asyncio.log import logger
 import json
 from logging import getLogger
 import numpy as np
+from pydantic import BaseModel
+from typing import List
 
 from transformers import BertJapaneseTokenizer
 import onnxruntime as ort
 
 logger = getLogger(__name__)
+
+class Data(BaseModel):
+    data: List[str]
 
 class Bert_model_cl(object):
     def __init__(self, 
@@ -30,7 +34,7 @@ class Bert_model_cl(object):
         self.output_0 = self.classifier.get_outputs()[0].name
         logger.info("Model loaded.")
 
-    def encoding_text(self, text):
+    def encoding_text(self, text: List[str]):
         logger.info("Encoding text...")
         tokenizer = BertJapaneseTokenizer.from_pretrained(self.config['model_name'])
         max_len = self.config["max_length"]
@@ -43,14 +47,14 @@ class Bert_model_cl(object):
         encoding["input_ids"] = np.array(encoding["input_ids"], dtype='int')
         encoding["attention_mask"] = np.array(encoding["attention_mask"], dtype='int')
         encoding["token_type_ids"] = np.array(encoding["token_type_ids"], dtype='int')
-
         encoding["input_ids"] = encoding["input_ids"].reshape(1, 128)
         encoding["attention_mask"] = encoding["attention_mask"].reshape(1, 128)
         encoding["token_type_ids"] = encoding["token_type_ids"].reshape(1, 128)
+
         logger.info("Text encoded.")
         return encoding
 
-    def predict_bert(self, text):
+    def predict_bert(self, text: List[str]):
         self.encoding = self.encoding_text(text)
         pred = self.classifier.run(None, input_feed=dict(self.encoding))
         pred_logits = pred[0][0].sum(axis=0)
