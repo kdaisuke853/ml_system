@@ -2,6 +2,6 @@
     "model_name": "cl-tohoku/bert-base-japanese-whole-word-masking",
     "max_length": 128,
     "news_model_path": "models/text_classification_movie.onnx",
-    "rectum_model_type": "models/text_classification_rectum.onnx",
+    "rectum_model_path": "models/text_classification_rectum.onnx",
     "tokenizer_path": "models/bert_tokenizer"
 }
