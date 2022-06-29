@@ -17,13 +17,32 @@ class Bert_model_cl(object):
             config_path,
         ):
         self.config = json.load(open(config_path))
+
         self.news_model_filepath = self.config["news_model_path"]
+        self.news_label_path = self.config["news_label_json_path"]        
         self.rectum_model_filepath = self.config["rectum_model_path"]
+        self.rectum_label_path = self.config["rectum_label_json_path"]
         self.classifier = None
         self.encoding = None
 
-        self.load_rectum_model()
         self.load_news_model()
+        self.load_news_label()
+        self.load_rectum_model()
+        self.load_rectum_label()
+
+
+    def load_news_model(self):
+        logger.info("Loading news model...")
+        logger.info(f"Model filepath: {self.news_model_filepath}")
+        self.news_classifier = ort.InferenceSession(self.news_model_filepath)
+        # self.input_ids = self.rectum_classifier.get_inputs()[0].name
+        # self.output = self.rectum_classifier.get_outputs()[0].name
+        logger.info("Model news loaded.")
+
+    def load_news_label(self):
+        logger.info(f"load label in {self.news_label_path}")
+        self.news_label = json.load(open(self.news_label_path))
+        logger.info(f"news.label: {self.news_label_path}")
 
     def load_rectum_model(self):
         logger.info("Loading rectum model...")
@@ -33,13 +52,10 @@ class Bert_model_cl(object):
         # self.output = self.rectum_classifier.get_outputs()[0].name
         logger.info("Model rectum loaded.")
 
-    def load_news_model(self):
-        logger.info("Loading news model...")
-        logger.info(f"Model filepath: {self.news_model_filepath}")
-        self.news_classifier = ort.InferenceSession(self.news_model_filepath)
-        # self.input_ids = self.rectum_classifier.get_inputs()[0].name
-        # self.output = self.rectum_classifier.get_outputs()[0].name
-        logger.info("Model news loaded.")
+    def load_rectum_label(self):
+        logger.info(f"load label in {self.rectum_label_path}")
+        self.rectum_label = json.load(open(self.rectum_label_path))
+        logger.info(f"news.label: {self.rectum_label_path}")
 
     def encoding_text(self, text: List[str]):
         logger.info("Encoding text...")
